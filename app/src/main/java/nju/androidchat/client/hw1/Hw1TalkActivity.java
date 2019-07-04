@@ -87,11 +87,10 @@ public class Hw1TalkActivity extends AppCompatActivity implements Hw1Contract.Vi
                     // 删除所有已有的ItemText
                     content.removeAllViews();
 
-                    // 增加ItemText
+                    // 增加Item
                     for (ClientMessage message : messages) {
                         String text = String.format("%s", message.getMessage());
 
-                        //如果是图片则取imagesend
                         if(!checkPicture(text).equals(text)){
                             if (message.getSenderUsername().equals(this.presenter.getUsername())) {
                                 picturePresenter.getImage(checkPicture(text), handler,message.getMessageId(),true);
@@ -100,8 +99,6 @@ public class Hw1TalkActivity extends AppCompatActivity implements Hw1Contract.Vi
                             }
                         }
                         else {
-                            // 如果是自己发的，增加ItemTextSend
-                            System.out.println("1111111111111111111111");
                             if (message.getSenderUsername().equals(this.presenter.getUsername())) {
                                 content.addView(new ItemTextSend(this, text, message.getMessageId(), this));
                             } else {
@@ -162,25 +159,15 @@ public class Hw1TalkActivity extends AppCompatActivity implements Hw1Contract.Vi
 
     }
 
-    public String checkPicture(String content) {
-        //Log.d("内容：",content);
+    public String checkPicture(String url) {
         String pattern = "!\\[.*]\\((.*)\\)$";
         Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(content);
+        Matcher m = r.matcher(url);
         if (!m.find()){
-            return content;
+            return url;
         }
         else {
-            if (m.group(1).substring(0,4).equals("http")){
-                if (!m.group(1).substring(0,5).equals("https")){
-                    return m.group(1).substring(0,4)+"s"+m.group(1).substring(4);
-                }
-                else {
-                    return m.group(1);
-                }
-            }else {
-                return m.group(1);
-            }
+            return ( m.group(1).substring(0,4).equals("http")&& (!m.group(1).substring(0,5).equals("https")) ) ? (m.group(1).substring(0,4)+"s"+m.group(1).substring(4)) : m.group(1);
         }
     }
 }
